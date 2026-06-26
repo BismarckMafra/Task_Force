@@ -74,3 +74,37 @@ body {
 .fc .fc-daygrid-day-top {
   padding: 0.75rem 0.75rem 0.5rem;
 }
+
+:root {
+  --cor-fundo:     #F8F9FA;   /* off-white — evita branco puro (fotofobia) */
+  --cor-texto:     #212529;
+  --cor-primaria:  #0066CC;
+  --cor-borda:     #DEE2E6;
+  --cor-foco:      #FF6600;   /* laranja — contraste em fundo claro e escuro */
+}
+
+/* Dark mode automático (preferência do SO) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cor-fundo:    #0F172A;
+    --cor-texto:    #E2E8F0;
+    --cor-primaria: #60A5FA;
+    --cor-borda:    #334155;
+  }
+}
+
+/* Dark mode manual via classe */
+html.dark-mode {
+  --cor-fundo:    #0F172A;
+  --cor-texto:    #E2E8F0;
+  --cor-primaria: #60A5FA;
+  --cor-borda:    #334155;
+}
+
+/* Alto contraste */
+html.alto-contraste {
+  --cor-fundo:    #000000;
+  --cor-texto:    #FFFFFF;
+  --cor-primaria: #FFFF00;
+  --cor-borda:    #FFFFFF;
+}
