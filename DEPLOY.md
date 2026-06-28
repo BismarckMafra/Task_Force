@@ -27,6 +27,9 @@ service cloud.firestore {
 - Conectar repositório e criar um novo projeto no Vercel.
 - Em Settings -> Environment Variables, adicionar todas as `NEXT_PUBLIC_FIREBASE_*` (Production/Preview/Development conforme necessário).
 - Fazer deploy; acessar `/register` e `/login` para testar fluxo de criação de conta e `/dashboard` para testar tarefas.
+- Se houver problema com `signInWithPopup` no Vercel, verifique o domínio autorizado em Firebase Console -> Authentication -> Sign-in method -> Authorized domains.
+  - Adicione o domínio do seu projeto Vercel, por exemplo `seu-projeto.vercel.app`.
+  - Se usar domínio customizado, adicione também esse domínio.
 
 5. Observações
 - Valores nas variáveis NÃO devem conter aspas.

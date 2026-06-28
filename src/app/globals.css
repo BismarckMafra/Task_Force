@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f9fa;
+  --foreground: #212529;
+  --surface: #ffffff;
+  --muted: #64748b;
+  --cor-fundo: #f8f9fa;
+  --cor-texto: #212529;
+  --cor-primaria: #0066cc;
+  --cor-borda: #dee2e6;
+  --cor-foco: #ff6600;
 }
 
 @theme inline {
@@ -13,52 +20,153 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not(.dark-mode) {
+    --background: #0f172a;
+    --foreground: #e2e8f0;
+    --surface: #111827;
+    --muted: #cbd5e1;
+    --cor-fundo: #0f172a;
+    --cor-texto: #e2e8f0;
+    --cor-primaria: #60a5fa;
+    --cor-borda: #334155;
   }
+}
+
+html.dark-mode {
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+  --surface: #111827;
+  --muted: #cbd5e1;
+  --cor-fundo: #0f172a;
+  --cor-texto: #e2e8f0;
+  --cor-primaria: #60a5fa;
+  --cor-borda: #334155;
+}
+
+html.alto-contraste {
+  --background: #000000;
+  --foreground: #ffffff;
+  --surface: #000000;
+  --muted: #fff3c4;
+  --cor-fundo: #000000;
+  --cor-texto: #ffffff;
+  --cor-primaria: #ffff00;
+  --cor-borda: #ffffff;
+}
+
+html.reduced-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+html.dark-mode body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+html.dark-mode body,
+html.dark-mode .bg-white,
+html.dark-mode .bg-slate-50,
+html.dark-mode .bg-slate-100,
+html.dark-mode .bg-slate-200,
+html.dark-mode .bg-slate-300,
+html.dark-mode .bg-slate-900,
+html.dark-mode .bg-slate-950,
+html.dark-mode .bg-\[\#f7f3ea\] {
+  background-color: var(--surface) !important;
+  color: var(--foreground) !important;
+}
+
+html.dark-mode .text-slate-950,
+html.dark-mode .text-slate-900,
+html.dark-mode .text-slate-800,
+html.dark-mode .text-slate-700,
+html.dark-mode .text-slate-600,
+html.dark-mode .text-slate-500,
+html.dark-mode .text-slate-400 {
+  color: var(--foreground) !important;
+}
+
+html.dark-mode .border-slate-200,
+html.dark-mode .border-slate-300,
+html.dark-mode .border-slate-800,
+html.dark-mode .border-slate-900 {
+  border-color: var(--cor-borda) !important;
+}
+
+html.alto-contraste body,
+html.alto-contraste .bg-white,
+html.alto-contraste .bg-slate-50,
+html.alto-contraste .bg-slate-100,
+html.alto-contraste .bg-slate-200,
+html.alto-contraste .bg-slate-300,
+html.alto-contraste .bg-slate-900,
+html.alto-contraste .bg-slate-950,
+html.alto-contraste .bg-\[\#f7f3ea\] {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+html.alto-contraste .text-slate-950,
+html.alto-contraste .text-slate-900,
+html.alto-contraste .text-slate-800,
+html.alto-contraste .text-slate-700,
+html.alto-contraste .text-slate-600,
+html.alto-contraste .text-slate-500,
+html.alto-contraste .text-slate-400 {
+  color: var(--foreground) !important;
+}
+
+html.alto-contraste .border-slate-200,
+html.alto-contraste .border-slate-300,
+html.alto-contraste .border-slate-800,
+html.alto-contraste .border-slate-900 {
+  border-color: var(--foreground) !important;
 }
 
 /* FullCalendar contrast and layout improvements */
 .fc {
-  color: #0f172a;
+  color: var(--cor-texto);
 }
 
 .fc .fc-toolbar-title {
-  color: #0f172a;
+  color: var(--cor-texto);
   font-weight: 700;
 }
 
 .fc .fc-button {
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
-  color: #0f172a;
+  border: 1px solid var(--cor-borda);
+  background: var(--surface);
+  color: var(--cor-texto);
 }
 
 .fc .fc-button:hover,
 .fc .fc-button:focus {
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--surface);
+  color: var(--cor-texto);
 }
 
 .fc .fc-col-header-cell-cushion,
 .fc .fc-daygrid-day-number {
-  color: #0f172a;
+  color: var(--cor-texto);
   font-weight: 600;
 }
 
 .fc .fc-daygrid-day-frame {
-  border-color: #e2e8f0;
+  border-color: var(--cor-borda);
 }
 
 .fc .fc-daygrid-day-events {
-  color: #0f172a;
+  color: var(--cor-texto);
 }
 
 .fc .fc-daygrid-event {
@@ -68,43 +176,9 @@ body {
 
 .fc-theme-standard .fc-scrollgrid thead tr,
 .fc-theme-standard .fc-scrollgrid tbody tr {
-  border-color: #e2e8f0;
+  border-color: var(--cor-borda);
 }
 
 .fc .fc-daygrid-day-top {
   padding: 0.75rem 0.75rem 0.5rem;
-}
-
-:root {
-  --cor-fundo:     #F8F9FA;   /* off-white — evita branco puro (fotofobia) */
-  --cor-texto:     #212529;
-  --cor-primaria:  #0066CC;
-  --cor-borda:     #DEE2E6;
-  --cor-foco:      #FF6600;   /* laranja — contraste em fundo claro e escuro */
-}
-
-/* Dark mode automático (preferência do SO) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --cor-fundo:    #0F172A;
-    --cor-texto:    #E2E8F0;
-    --cor-primaria: #60A5FA;
-    --cor-borda:    #334155;
-  }
-}
-
-/* Dark mode manual via classe */
-html.dark-mode {
-  --cor-fundo:    #0F172A;
-  --cor-texto:    #E2E8F0;
-  --cor-primaria: #60A5FA;
-  --cor-borda:    #334155;
-}
-
-/* Alto contraste */
-html.alto-contraste {
-  --cor-fundo:    #000000;
-  --cor-texto:    #FFFFFF;
-  --cor-primaria: #FFFF00;
-  --cor-borda:    #FFFFFF;
 }

@@ -1,9 +1,6 @@
 import { ArrowRight, CheckCircle2, Gauge, LogIn, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
-import { Footer } from "@/components/Footer";
-import { Navbar } from "@/components/Navbar";
-
 const features = [
   {
     icon: CheckCircle2,
@@ -25,8 +22,6 @@ const features = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#f7f3ea]">
-      <Navbar />
-
       <section className="mx-auto grid w-full max-w-7xl gap-10 px-6 pb-16 pt-10 md:grid-cols-[1.02fr_0.98fr] md:items-center md:px-10 md:pb-24 md:pt-16">
         <div className="max-w-2xl">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
@@ -122,8 +117,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      <Footer />
     </main>
   );
 }

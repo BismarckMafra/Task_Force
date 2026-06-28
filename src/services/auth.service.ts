@@ -5,14 +5,28 @@ import {
   signInWithPopup,
   signOut,
   updateProfile,
+  type Auth,
   type User,
 } from "firebase/auth";
 
-import { auth, googleProvider } from "@/lib/firebase";
+import { getFirebaseAuth, googleProvider } from "@/lib/firebase";
 import type { AppUser, LoginInput, RegisterInput } from "@/types/user";
 
+function getAuthClient(): Auth {
+  const auth = getFirebaseAuth();
+
+  if (!auth) {
+    throw new Error(
+      "Firebase não está inicializado. Verifique as variáveis de ambiente NEXT_PUBLIC_FIREBASE_*.",
+    );
+  }
+
+  return auth;
+}
+
 export async function registerWithEmail(input: RegisterInput) {
-  const credential = await createUserWithEmailAndPassword(auth, input.email, input.password);
+  const authClient = getAuthClient();
+  const credential = await createUserWithEmailAndPassword(authClient, input.email, input.password);
 
   await updateProfile(credential.user, {
     displayName: input.name,
@@ -20,23 +34,26 @@ export async function registerWithEmail(input: RegisterInput) {
   await sendEmailVerification(credential.user);
   await credential.user.reload();
 
-  return mapFirebaseUser(auth.currentUser || credential.user);
+  return mapFirebaseUser(authClient.currentUser || credential.user);
 }
 
 export async function loginWithEmail(input: LoginInput) {
-  const credential = await signInWithEmailAndPassword(auth, input.email, input.password);
+  const authClient = getAuthClient();
+  const credential = await signInWithEmailAndPassword(authClient, input.email, input.password);
 
   return mapFirebaseUser(credential.user);
 }
 
 export async function loginWithGoogle() {
-  const credential = await signInWithPopup(auth, googleProvider);
+  const authClient = getAuthClient();
+  const credential = await signInWithPopup(authClient, googleProvider);
 
   return mapFirebaseUser(credential.user);
 }
 
 export async function logout() {
-  await signOut(auth);
+  const authClient = getAuthClient();
+  await signOut(authClient);
 }
 
 export function mapFirebaseUser(user: User): AppUser {

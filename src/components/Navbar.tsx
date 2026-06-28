@@ -2,6 +2,7 @@
 
 import { LayoutDashboard, LogIn, Menu, UserPlus, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,6 +17,8 @@ const links = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const { user, loading } = useAuth();
+  const pathname = usePathname();
+  const showDashboardBack = user && pathname !== "/dashboard";
 
   return (
     <header className="border-b border-slate-200 bg-white/90 backdrop-blur">
@@ -33,6 +36,16 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          {showDashboardBack && (
+            <Link
+              href="/dashboard"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-emerald-700 bg-white px-4 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
+            >
+              <LayoutDashboard size={17} aria-hidden="true" />
+              Voltar ao dashboard
+            </Link>
+          )}
+
           {!loading && user ? (
             <Link
               href="/dashboard"

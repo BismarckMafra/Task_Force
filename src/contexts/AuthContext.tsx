@@ -11,7 +11,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { auth } from "@/lib/firebase";
+import { getFirebaseAuth } from "@/lib/firebase";
 import {
   loginWithEmail as loginWithEmailService,
   loginWithGoogle as loginWithGoogleService,
@@ -37,7 +37,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const authClient = getFirebaseAuth();
+    if (!authClient) {
+      setLoading(false);
+      return;
+    }
+
+    const unsubscribe = onAuthStateChanged(authClient, (firebaseUser) => {
       setUser(firebaseUser ? mapFirebaseUser(firebaseUser) : null);
       setLoading(false);
     });

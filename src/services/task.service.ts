@@ -12,9 +12,10 @@ import {
   type FirestoreError,
   type QueryDocumentSnapshot,
   type Timestamp,
+  type Firestore,
 } from "firebase/firestore";
 
-import { db } from "@/lib/firebase";
+import { getFirestoreDb } from "@/lib/firebase";
 import type { Task, TaskInput, TaskStatus } from "@/types/task";
 
 type TaskDocument = {
@@ -29,7 +30,14 @@ type TaskDocument = {
 };
 
 function tasksCollection(userId: string) {
-  return collection(db, "users", userId, "tasks");
+  const db = getFirestoreDb();
+  if (!db) {
+    throw new Error(
+      "Firestore não está inicializado. Verifique as variáveis de ambiente NEXT_PUBLIC_FIREBASE_*.",
+    );
+  }
+
+  return collection(db as Firestore, "users", userId, "tasks");
 }
 
 export function subscribeToTasks(
@@ -58,25 +66,53 @@ export async function createTask(userId: string, input: TaskInput) {
 }
 
 export async function updateTask(userId: string, taskId: string, input: TaskInput) {
-  await updateDoc(doc(db, "users", userId, "tasks", taskId), {
+  const db = getFirestoreDb();
+  if (!db) {
+    throw new Error(
+      "Firestore não está inicializado. Verifique as variáveis de ambiente NEXT_PUBLIC_FIREBASE_*.",
+    );
+  }
+
+  await updateDoc(doc(db as Firestore, "users", userId, "tasks", taskId), {
     ...input,
     updatedAt: serverTimestamp(),
   });
 }
 
 export async function updateTaskStatus(userId: string, taskId: string, status: TaskStatus) {
-  await updateDoc(doc(db, "users", userId, "tasks", taskId), {
+  const db = getFirestoreDb();
+  if (!db) {
+    throw new Error(
+      "Firestore não está inicializado. Verifique as variáveis de ambiente NEXT_PUBLIC_FIREBASE_*.",
+    );
+  }
+
+  await updateDoc(doc(db as Firestore, "users", userId, "tasks", taskId), {
     status,
     updatedAt: serverTimestamp(),
   });
 }
 
 export async function deleteTask(userId: string, taskId: string) {
-  await deleteDoc(doc(db, "users", userId, "tasks", taskId));
+  const db = getFirestoreDb();
+  if (!db) {
+    throw new Error(
+      "Firestore não está inicializado. Verifique as variáveis de ambiente NEXT_PUBLIC_FIREBASE_*.",
+    );
+  }
+
+  await deleteDoc(doc(db as Firestore, "users", userId, "tasks", taskId));
 }
 
 export async function getTask(userId: string, taskId: string) {
-  const d = await getDoc(doc(db, "users", userId, "tasks", taskId));
+  const db = getFirestoreDb();
+  if (!db) {
+    throw new Error(
+      "Firestore não está inicializado. Verifique as variáveis de ambiente NEXT_PUBLIC_FIREBASE_*.",
+    );
+  }
+
+  const d = await getDoc(doc(db as Firestore, "users", userId, "tasks", taskId));
   if (!d.exists()) return null;
   return mapTaskDocument(d as any);
 }

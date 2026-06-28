@@ -126,9 +126,22 @@ export function LoginPageClient() {
 
 function getAuthMessage(error: unknown) {
   const code = typeof error === "object" && error && "code" in error ? String(error.code) : "";
+  const message = typeof error === "object" && error && "message" in error ? String((error as any).message) : "";
 
-  if (code.includes("auth/invalid-credential")) {
+  if (code.includes("auth/invalid-credential") || code.includes("auth/invalid-email")) {
     return "Email ou senha incorretos.";
+  }
+
+  if (code.includes("auth/user-not-found")) {
+    return "Usuario nao encontrado. Verifique o email cadastrado.";
+  }
+
+  if (code.includes("auth/wrong-password")) {
+    return "Senha incorreta. Verifique a senha e tente novamente.";
+  }
+
+  if (code.includes("auth/unauthorized-domain")) {
+    return "Dominio nao autorizado no Firebase. Adicione o dominio do Vercel em Firebase Console -> Authentication -> Authorized domains.";
   }
 
   if (code.includes("auth/popup-closed-by-user")) {
@@ -139,5 +152,13 @@ function getAuthMessage(error: unknown) {
     return "Firebase Authentication ainda nao esta configurado para este projeto.";
   }
 
-  return "Nao foi possivel entrar agora. Verifique os dados e tente novamente.";
+  if (code.includes("auth/network-request-failed")) {
+    return "Falha de rede. Verifique sua conexao e tente novamente.";
+  }
+
+  if (code.includes("auth/too-many-requests")) {
+    return "Muitas tentativas. Aguarde um momento e tente novamente.";
+  }
+
+  return message || "Nao foi possivel entrar agora. Verifique os dados e tente novamente.";
 }
