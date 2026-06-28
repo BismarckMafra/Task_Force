@@ -1,12 +1,11 @@
 "use client";
 
-"use client";
-
+import { useEffect, useState } from "react";
 import { Contrast, Moon, Sun, Zap } from "lucide-react";
 
 import { useDarkMode } from "./Darkmode";
 
-export function Footer() {
+function FooterContent() {
   const { dark, highContrast, reducedMotion, toggle, toggleHighContrast, toggleReducedMotion } = useDarkMode();
 
   return (
@@ -54,4 +53,29 @@ export function Footer() {
       </div>
     </footer>
   );
+}
+
+export function Footer() {
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  // Prevent hydration mismatch by rendering empty footer on server
+  if (!isHydrated) {
+    return (
+      <footer className="border-t border-slate-800 bg-slate-950 text-slate-200">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm md:flex-row md:items-center md:justify-between md:px-10">
+          <div className="space-y-1">
+            <p className="font-semibold">TaskFlow</p>
+            <p>Projeto acadêmico de gerenciamento de tarefas com Next.js e Firebase.</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2" />
+        </div>
+      </footer>
+    );
+  }
+
+  return <FooterContent />;
 }

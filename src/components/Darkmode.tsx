@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useLayoutEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState, type ReactNode } from "react";
 
 type ThemeContextType = {
   dark: boolean;
@@ -15,24 +15,30 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [dark, setDark] = useState(() => {
-    if (typeof window === "undefined") return false;
+  const [dark, setDark] = useState(false);
+  const [highContrast, setHighContrast] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
+  // Sync with localStorage and system preferences after hydration
+  useEffect(() => {
     const savedDark = localStorage.getItem("darkMode");
-    return savedDark !== null
-      ? savedDark === "true"
-      : window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
-  const [highContrast, setHighContrast] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("highContrast") === "true";
-  });
-  const [reducedMotion, setReducedMotion] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("reducedMotion") === "true";
-  });
+    const savedHighContrast = localStorage.getItem("highContrast");
+    const savedReducedMotion = localStorage.getItem("reducedMotion");
+
+    setDark(
+      savedDark !== null
+        ? savedDark === "true"
+        : window.matchMedia("(prefers-color-scheme: dark)").matches
+    );
+    setHighContrast(savedHighContrast === "true");
+    setReducedMotion(savedReducedMotion === "true");
+    setIsHydrated(true);
+  }, []);
 
   useLayoutEffect(() => {
+    if (!isHydrated) return;
+
     document.documentElement.classList.toggle("dark-mode", dark);
     document.documentElement.classList.toggle("alto-contraste", highContrast);
     document.documentElement.classList.toggle("reduced-motion", reducedMotion);
@@ -41,7 +47,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("darkMode", String(dark));
     localStorage.setItem("highContrast", String(highContrast));
     localStorage.setItem("reducedMotion", String(reducedMotion));
-  }, [dark, highContrast, reducedMotion]);
+  }, [dark, highContrast, reducedMotion, isHydrated]);
 
   const vibrate = (pattern: number | number[] = [10]) => {
     if (typeof window !== "undefined" && "vibrate" in navigator) {

@@ -35,21 +35,30 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const authClient = getFirebaseAuth();
-    if (!authClient) {
-      setLoading(false);
-      return;
-    }
+    const initializeAuth = async () => {
+      const authClient = getFirebaseAuth();
+      if (!authClient) {
+        setLoading(false);
+        setIsInitialized(true);
+        return;
+      }
 
-    const unsubscribe = onAuthStateChanged(authClient, (firebaseUser) => {
-      setUser(firebaseUser ? mapFirebaseUser(firebaseUser) : null);
-      setLoading(false);
-    });
+      const unsubscribe = onAuthStateChanged(authClient, (firebaseUser) => {
+        setUser(firebaseUser ? mapFirebaseUser(firebaseUser) : null);
+        if (!isInitialized) {
+          setLoading(false);
+          setIsInitialized(true);
+        }
+      });
 
-    return unsubscribe;
-  }, []);
+      return unsubscribe;
+    };
+
+    initializeAuth();
+  }, [isInitialized]);
 
   const registerWithEmail = useCallback(async (input: RegisterInput) => {
     const appUser = await registerWithEmailService(input);
